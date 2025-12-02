@@ -99,6 +99,11 @@
     .projects-section .projects-header h2{font-size:40px;margin:0;color:#222}
     .projects-section .projects-header .underline{width:60px;height:6px;background:var(--primary);margin:12px auto;border-radius:4px}
 
+    /* Contact header should match projects header and be centered */
+    .contact-section .projects-header{text-align:center;margin-bottom:28px}
+    .contact-section .projects-header h2{font-size:40px;margin:0;color:#222}
+    .contact-section .projects-header .underline{width:60px;height:6px;background:var(--primary);margin:12px auto;border-radius:4px}
+
     .project-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:28px;max-width:1200px;margin:26px auto}
     .project-card{background:#fff;border-radius:12px;overflow:hidden;box-shadow:0 10px 30px rgba(11,22,48,0.06);display:flex;flex-direction:column}
     .project-card img{width:100%;height:210px;object-fit:cover;display:block}
@@ -483,11 +488,11 @@
     </div>
   </section>
 
-  <section id="projects" class="projects-section">
-    <div class="projects-header">
+  <section id="contact" class="contact-section">
+    <div class="contact-header">
       <h2>My Contact</h2>
       <div class="underline"></div>
-      
+    </div>  
     <div class="contact-inner">
       <div class="contact-card contact-form">
         <form id="contactForm" action="https://formsubmit.co/pranaykumarsriram@gmail.com" method="POST" data-service="formsubmit">
@@ -535,7 +540,7 @@
     // Robust nav click delegation: works even if other scripts run earlier
     (function(){
       document.addEventListener('click', function(e){
-        const a = e.target.closest && e.target.closest('.nav-links a');
+        const a = e.target.closest && e.target.closest('a[href^="#"]');
         if (!a) return;
         const href = a.getAttribute('href');
         if (!href || !href.startsWith('#')) return;
@@ -543,8 +548,12 @@
         const target = document.getElementById(id);
         if (!target) return;
         e.preventDefault();
-        // Use scrollIntoView for better cross-browser behavior
-        target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        // Scroll with header offset so sticky header doesn't cover the target
+        const header = document.querySelector('.site-header');
+        const headerHeight = header ? header.offsetHeight : 0;
+        const rect = target.getBoundingClientRect();
+        const top = window.scrollY + rect.top - headerHeight - 12;
+        window.scrollTo({ top, behavior: 'smooth' });
         try { history.replaceState(null, '', '#' + id); } catch(e){}
         if (id === 'contact'){
           // focus name after scroll
@@ -563,7 +572,11 @@
       function scrollToId(id){
         const el = document.getElementById(id);
         if (!el) return;
-        el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        const header = document.querySelector('.site-header');
+        const headerHeight = header ? header.offsetHeight : 0;
+        const rect = el.getBoundingClientRect();
+        const top = window.scrollY + rect.top - headerHeight - 12;
+        window.scrollTo({ top, behavior: 'smooth' });
       }
 
       const viewBtn = document.getElementById('viewWorkBtn');
@@ -571,13 +584,8 @@
         viewBtn.addEventListener('click', function(e){
           e.preventDefault();
           // Scroll to projects only (no automatic jump to contact)
-          const projectsEl = document.getElementById('projects');
-          if (projectsEl){
-            projectsEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
-            try { history.replaceState(null, '', '#projects'); } catch(e){}
-          } else {
-            scrollToId('projects');
-          }
+          scrollToId('projects');
+          try { history.replaceState(null, '', '#projects'); } catch(e){}
         });
       }
 
@@ -586,6 +594,7 @@
         contactBtn.addEventListener('click', function(e){
           e.preventDefault();
           scrollToId('contact');
+          try { history.replaceState(null, '', '#contact'); } catch(e){}
           setTimeout(()=>{ const name = document.getElementById('c_name'); if (name) name.focus({preventScroll:true}); }, 600);
         });
       }
