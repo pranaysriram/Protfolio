@@ -1,0 +1,505 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Portfolio</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;800&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --bg:#f6f7fb;
+      --panel:#ffffff;
+      --primary:#4b63ff;
+      --accent:#ff9a1f;
+      --muted:#6b6f76;
+      --max-w:1200px;
+    }
+    *{box-sizing:border-box}
+    html{scroll-behavior:smooth}
+    html,body{height:100%;}
+    body{margin:0;font-family:'Poppins',system-ui,Segoe UI,Roboto,Arial; background:var(--bg); color:#222}
+
+    /* Top navigation */
+    .site-header{background:var(--panel);box-shadow:0 2px 10px rgba(15,23,42,0.06);position:sticky;top:0;z-index:30}
+    .nav-inner{max-width:var(--max-w);margin:0 auto;display:flex;align-items:center;justify-content:space-between;padding:18px 28px}
+    .brand{font-weight:800;color:var(--primary);font-size:24px}
+    .nav-links{display:flex;gap:26px}
+    .nav-links a{color:#333;text-decoration:none;font-weight:500;position:relative;padding:6px 2px}
+    .nav-links a.active{color:var(--primary)}
+    .nav-links a.active::after{content:'';position:absolute;left:50%;transform:translateX(-50%);bottom:-10px;width:34px;height:4px;background:var(--primary);border-radius:4px;box-shadow:0 6px 18px rgba(75,99,255,0.15)}
+
+    /* Hero */
+    .hero{max-width:var(--max-w);margin:36px auto;background:linear-gradient(180deg,#ffffff 0%, #fbfbfd 100%);padding:64px;border-radius:4px;display:flex;align-items:center;gap:40px}
+    .hero-left{flex:1;padding-left:28px}
+    .eyebrow{color:var(--accent);font-weight:700;font-size:44px;display:inline-block;margin:0}
+    .name-line{display:block;color:var(--primary);font-weight:800;font-size:64px;margin:0 0 8px}
+    .title{font-size:26px;color:#555;font-weight:700;margin:14px 0}
+    .lead{color:var(--muted);max-width:560px;line-height:1.6}
+
+    .cta-row{margin-top:28px;display:flex;gap:16px;align-items:center}
+    .btn{Padding:12px 22px;border-radius:8px;font-weight:600;border:2px solid transparent;cursor:pointer}
+    .btn-primary{background:var(--primary);color:#fff}
+    .btn-outline{background:transparent;color:var(--primary);border-color:var(--primary)}
+
+    .socials{margin-top:22px;display:flex;gap:12px}
+    .social{width:44px;height:44px;border-radius:50%;background:#f2f3f5;display:inline-flex;align-items:center;justify-content:center}
+
+    .hero-right{width:420px;flex:0 0 420px;display:flex;align-items:center;justify-content:center}
+    .profile-wrap{width:320px;height:320px;border-radius:50%;background:#fff;padding:12px;box-shadow:0 8px 30px rgba(11,22,48,0.12);border:6px solid rgba(255,255,255,0.9);display:flex;align-items:center;justify-content:center}
+    .profile{width:100%;height:100%;border-radius:50%;object-fit:cover;display:block}
+
+    /* Responsive */
+    @media (max-width:920px){
+      .hero{flex-direction:column;padding:40px}
+      .hero-right{width:220px;flex-basis:auto}
+      .profile-wrap{width:220px;height:220px}
+      .name-line{font-size:44px}
+    }
+    @media (max-width:520px){
+      .nav-inner{padding:12px}
+      .nav-links{display:none}
+      .hero{padding:28px}
+      .eyebrow{font-size:32px}
+    }
+    /* About section styles */
+    .about-section{max-width:var(--max-w);margin:40px auto;padding:60px 28px 80px;background:transparent}
+    .about-header{text-align:center;margin-bottom:32px}
+    .about-header h2{font-size:44px;margin:0;color:#222}
+    .about-header .underline{width:60px;height:6px;background:var(--primary);margin:12px auto;border-radius:4px}
+
+    .about-inner{max-width:880px;margin:0 auto}
+    .about-left{padding-right:0}
+    .about-left p{color:#444;line-height:1.85;margin-bottom:18px;font-size:18px}
+    .download-btn{display:inline-block;margin-top:20px;padding:12px 20px;background:var(--primary);color:#fff;border-radius:8px;text-decoration:none;font-weight:600}
+
+    @media (max-width:920px){
+      .about-inner{padding:0 16px}
+    }
+    /* Skills section */
+    .skills-section{max-width:var(--max-w);margin:40px auto;padding:60px 28px;background:transparent}
+    .skills-header{text-align:center;margin-bottom:28px}
+    .skills-header h2{font-size:40px;margin:0;color:#222}
+    .skills-header .underline{width:60px;height:6px;background:var(--primary);margin:12px auto;border-radius:4px}
+
+    .skills-grid{display:grid;grid-template-columns:1fr 1fr;gap:40px;align-items:start;max-width:1000px;margin:0 auto;padding-top:10px}
+    .skills-column{padding:8px 12px}
+    .skill{display:flex;align-items:center;gap:18px;margin:18px 0}
+    .skill-name{width:100px;color:#222;font-weight:600}
+    .skill-bar{flex:1;height:14px;background:#e9e9ec;border-radius:10px;position:relative;overflow:hidden}
+    .skill-fill{height:100%;background:var(--primary);border-radius:10px 0 0 10px}
+    .skill-percent{width:48px;text-align:right;color:#444;font-weight:600}
+
+    @media (max-width:920px){
+      .skills-grid{grid-template-columns:1fr;padding:0 18px}
+      .skill-name{width:110px}
+    }
+    /* Projects section */
+    .projects-section{max-width:var(--max-w);margin:50px auto;padding:60px 28px;background:transparent}
+    .projects-section .projects-header{text-align:center;margin-bottom:28px}
+    .projects-section .projects-header h2{font-size:40px;margin:0;color:#222}
+    .projects-section .projects-header .underline{width:60px;height:6px;background:var(--primary);margin:12px auto;border-radius:4px}
+
+    .project-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:28px;max-width:1200px;margin:26px auto}
+    .project-card{background:#fff;border-radius:12px;overflow:hidden;box-shadow:0 10px 30px rgba(11,22,48,0.06);display:flex;flex-direction:column}
+    .project-card img{width:100%;height:210px;object-fit:cover;display:block}
+    .project-body{padding:20px 22px;flex:1;display:flex;flex-direction:column}
+    .project-body h3{margin:0 0 10px;color:#222}
+    .project-body p{color:#6b6f76;margin:0 0 16px;flex:0}
+    .project-tags{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px}
+    .tag{background:#f2f3f5;padding:8px 10px;border-radius:8px;color:#555;font-weight:600;font-size:13px}
+    .project-actions{margin-top:auto;display:flex;gap:10px}
+    .btn-outline-small{padding:8px 12px;border-radius:8px;border:2px solid var(--primary);color:var(--primary);background:transparent;text-decoration:none;font-weight:600}
+    .btn-small{padding:8px 12px;border-radius:8px;background:var(--primary);color:#fff;text-decoration:none;font-weight:600}
+
+    @media (max-width:1100px){
+      .project-grid{grid-template-columns:repeat(2,1fr)}
+    }
+    @media (max-width:700px){
+      .project-grid{grid-template-columns:1fr}
+    }
+
+    /* Contact section (light) */
+    .contact-section{background:#ffffff;color:#222;padding:80px 20px}
+    .contact-inner{max-width:1100px;margin:0 auto;display:grid;grid-template-columns:1fr 380px;gap:36px;align-items:start}
+    .contact-card{background:#ffffff;padding:22px;border-radius:12px;box-shadow:0 8px 28px rgba(15,23,42,0.06);border:1px solid rgba(15,23,42,0.04)}
+    .contact-form .field{display:block;margin-bottom:14px}
+    .contact-form input,.contact-form textarea{width:100%;padding:14px 16px;border-radius:10px;border:1px solid #e6e9ee;background:#fbfcfe;color:#122;outline:none}
+    .contact-form textarea{min-height:120px;resize:vertical}
+    .contact-actions{display:flex;gap:14px;margin-top:8px}
+    .btn-send{background:var(--primary);color:#fff; padding:12px 18px;border-radius:12px;border:none;font-weight:700;cursor:pointer}
+    .btn-download{background:transparent;color:var(--primary);padding:12px 18px;border-radius:12px;border:1px solid rgba(75,99,255,0.12);font-weight:700;cursor:pointer}
+
+    .contact-info{padding:22px;border-radius:10px;background:#f8fafc;border:1px solid rgba(15,23,42,0.03)}
+    .contact-info h3{margin:0 0 14px;color:#111}
+    .contact-info p{margin:8px 0;color:#4b5563}
+    .contact-info a{color:var(--primary);text-decoration:underline}
+    .contact-socials{display:flex;gap:10px;margin-top:16px}
+    .social-pill{background:var(--primary);color:#fff;padding:10px 14px;border-radius:10px;font-weight:700;text-decoration:none}
+
+    .site-footer{
+      background:linear-gradient(180deg,#071129 0%,#08182a 100%);
+      padding:36px 20px;
+      color:#e9fbff;
+      text-align:center;
+      box-shadow:0 -6px 20px rgba(8,24,40,0.35);
+      position:relative;
+      z-index:20;
+    }
+    .site-footer .name{color:#e9fbff;font-weight:700;margin-bottom:8px}
+    .footer-icons{display:flex;gap:14px;justify-content:center;margin:10px 0}
+    .footer-icons a{color:#cfecff;text-decoration:none;padding:6px 8px;border-radius:6px}
+
+    @media (max-width:920px){
+      .contact-inner{grid-template-columns:1fr}
+      .contact-section{padding:48px 14px}
+    }
+  </style>
+</head>
+<body>
+  <header class="site-header">
+    <div class="nav-inner">
+      <div class="brand">Portfolio</div>
+      <nav class="nav-links">
+        <a class="active" href="#home">Home</a>
+        <a href="#about">About</a>
+        <a href="#skills">Skills</a>
+        <a href="#projects">Projects</a>
+        <a href="#contact">Contact</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <section id="home" class="hero" aria-label="Introduction">
+      <div class="hero-left">
+        <h2 class="eyebrow">Hi, I'm </h2>
+        <h1 class="name-line">Sriram Pranay Kumar</h1>
+        <div class="title">Python Developer & AI Enthusiast</div>
+        
+        <div class="cta-row">
+          <button class="btn btn-primary">View My Work</button>
+          <button class="btn btn-outline">Contact Me</button>
+        </div>
+
+        <div class="socials">
+          <a class="social" href="https://github.com/pranaysriram" aria-label="GitHub"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 .5C5.73.5.85 5.38.85 11.67c0 4.9 3.18 9.06 7.59 10.53.56.1.77-.24.77-.53 0-.26-.01-1-.01-1.93-3.09.67-3.74-1.49-3.74-1.49-.5-1.27-1.22-1.61-1.22-1.61-.99-.68.07-.67.07-.67 1.09.08 1.66 1.12 1.66 1.12.98 1.68 2.57 1.2 3.2.92.1-.72.38-1.2.69-1.48-2.47-.28-5.07-1.24-5.07-5.51 0-1.22.44-2.22 1.16-3.01-.12-.29-.5-1.45.11-3.02 0 0 .95-.31 3.12 1.15.9-.25 1.86-.38 2.82-.38.96 0 1.92.13 2.82.38 2.17-1.47 3.12-1.15 3.12-1.15.61 1.57.23 2.73.11 3.02.72.79 1.16 1.79 1.16 3.01 0 4.28-2.6 5.23-5.08 5.51.39.34.74 1.02.74 2.06 0 1.49-.01 2.69-.01 3.06 0 .29.21.64.78.53C19.98 20.73 23.15 16.57 23.15 11.67 23.15 5.38 18.27.5 12 .5z" fill="#111"/></svg></a>
+          <a class="social" href="https://www.linkedin.com/in/sriram-pranay-kumar/" aria-label="LinkedIn"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M4.98 3.5C4.98 4.88 3.86 6 2.48 6S0 4.88 0 3.5 1.12 1 2.5 1s2.48 1.12 2.48 2.5zM.24 8.5h4.48V24H.24V8.5zM8.98 8.5h4.3v2.08h.06c.6-1.14 2.07-2.34 4.26-2.34 4.56 0 5.4 3 5.4 6.9V24h-4.48v-7.72c0-1.84-.03-4.21-2.57-4.21-2.57 0-2.97 2.01-2.97 4.07V24H8.98V8.5z" fill="#111"/></svg></a>
+       </div>
+      </div>
+
+      <div class="hero-right">
+        <div class="profile-wrap">
+          <img class="profile" src="profile.jpg" alt="Profile picture" onerror="this.onerror=null;this.src='https://images.unsplash.com/photo-1527980965255-d3b416303d12?auto=format&fit=crop&w=800&q=80'" />
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <section id="about" class="about-section">
+    <div class="about-header">
+      <h2>About Me</h2>
+      <div class="underline"></div>
+    </div>
+
+    <div class="about-inner">
+      <div class="about-left">
+        <p>Hello! I'm a passionate Python developer with a strong foundation. I enjoy creating responsive, user-friendly websites that solve real-world problems.</p>
+
+        <p>Pursuing a B.Tech in Artificial Intelligence and Machine Learning, seeking an entry-level position in a fast-paced
+ and innovative environment where I can leverage my skills and knowledge to make a positive impact.</p>
+
+        <a class="download-btn" href="Pranay_Resume.pdf" download>Download Resume</a>
+      </div>
+    </div>
+  </section>
+
+  <script>
+    // Highlight nav links: IntersectionObserver with scroll fallback for reliability
+    document.addEventListener('DOMContentLoaded', function(){
+      const sections = Array.from(document.querySelectorAll('section[id]'));
+      const navLinks = Array.from(document.querySelectorAll('.nav-links a'));
+      const header = document.querySelector('.site-header');
+
+      function setActive(id){
+        navLinks.forEach(l => l.classList.toggle('active', l.getAttribute('href') === ('#' + id)));
+      }
+
+      // Primary: IntersectionObserver (chooses section when ~50% visible)
+      const ioOptions = { root: null, rootMargin: '0px 0px -50% 0px', threshold: 0.5 };
+      const io = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) setActive(entry.target.id);
+        });
+      }, ioOptions);
+      sections.forEach(s => io.observe(s));
+
+      // Fallback: on scroll compute the section nearest to viewport center
+      function highlightOnScroll(){
+        const offset = (header ? header.offsetHeight : 0);
+        const center = window.scrollY + (window.innerHeight / 2) + offset * 0.2;
+        let found = sections[0];
+        for (const sec of sections){
+          const top = sec.offsetTop;
+          const bottom = top + sec.offsetHeight;
+          if (center >= top && center < bottom) { found = sec; break; }
+        }
+        if (found) setActive(found.id);
+      }
+
+      // Run fallback on load and during scroll/resize in case IntersectionObserver misses
+      window.addEventListener('scroll', throttle(highlightOnScroll, 100));
+      window.addEventListener('resize', throttle(highlightOnScroll, 200));
+      highlightOnScroll();
+
+      // small throttle helper
+      function throttle(fn, wait){
+        let last = 0, t;
+        return function(...args){
+          const now = Date.now();
+          if (now - last >= wait){ last = now; fn.apply(this, args); }
+          else { clearTimeout(t); t = setTimeout(()=>{ last = Date.now(); fn.apply(this, args); }, wait - (now - last)); }
+        };
+      }
+    });
+  </script>
+
+  <script>
+    // Smooth scroll for nav links and focus Contact form when clicked
+    document.addEventListener('DOMContentLoaded', function(){
+      const header = document.querySelector('.site-header');
+      const navLinks = Array.from(document.querySelectorAll('.nav-links a'));
+      function scrollToEl(el){
+        const headerHeight = header ? header.offsetHeight : 0;
+        const rect = el.getBoundingClientRect();
+        const top = window.scrollY + rect.top - headerHeight - 12;
+        window.scrollTo({ top, behavior: 'smooth' });
+      }
+
+      navLinks.forEach(a => {
+        a.addEventListener('click', function(e){
+          const href = a.getAttribute('href');
+          if (!href || !href.startsWith('#')) return;
+          const id = href.slice(1);
+          const target = document.getElementById(id);
+          if (!target) return;
+          e.preventDefault();
+          scrollToEl(target);
+          // If contact, focus first input after scroll finishes
+          if (id === 'contact'){
+            // wait for the smooth scroll to mostly finish
+            setTimeout(()=>{
+              const nameInput = document.getElementById('c_name');
+              if (nameInput) nameInput.focus();
+            }, 550);
+          }
+        });
+      });
+    });
+  </script>
+
+  <script>
+    // Contact form: open mail client with prefilled subject/body
+    document.addEventListener('DOMContentLoaded', function(){
+      const form = document.getElementById('contactForm');
+      if (!form) return;
+      form.addEventListener('submit', function(e){
+        e.preventDefault();
+        const name = document.getElementById('c_name').value.trim();
+        const email = document.getElementById('c_email').value.trim();
+        const message = document.getElementById('c_message').value.trim();
+        const to = 'pranaykumarsriram@gmail.com';
+        const subject = encodeURIComponent('Portfolio contact from ' + (name || email || 'Website'));
+        const bodyLines = [];
+        if (name) bodyLines.push('Name: ' + name);
+        if (email) bodyLines.push('Email: ' + email);
+        if (message) bodyLines.push('\n' + message);
+        const body = encodeURIComponent(bodyLines.join('\n'));
+        // open mail client
+        window.location.href = 'mailto:' + to + '?subject=' + subject + '&body=' + body;
+        // show quick feedback
+        setTimeout(()=>{
+          alert('Opening your email client to send the message.');
+        }, 200);
+      });
+    });
+  </script>
+
+  <section id="skills" class="skills-section">
+    <div class="skills-header">
+      <h2>My Skills</h2>
+      <div class="underline"></div>
+    </div>
+
+    <div class="skills-grid">
+      <div class="skills-column">
+        <h3 style="margin-bottom:18px;color:#222">Data Analyst</h3>
+
+        <div class="skill">
+          <div class="skill-name">Python</div>
+          <div class="skill-bar" aria-hidden="true"><div class="skill-fill" style="width:90%"></div></div>
+          <div class="skill-percent">90%</div>
+        </div>
+
+        <div class="skill">
+          <div class="skill-name">Machine Learning</div>
+          <div class="skill-bar" aria-hidden="true"><div class="skill-fill" style="width:85%"></div></div>
+          <div class="skill-percent">85%</div>
+        </div>
+
+        <div class="skill">
+          <div class="skill-name">PowerBI</div>
+          <div class="skill-bar" aria-hidden="true"><div class="skill-fill" style="width:80%"></div></div>
+          <div class="skill-percent">80%</div>
+        </div>
+        <div class="skill">
+          <div class="skill-name">Math Libraries</div>
+          <div class="skill-bar" aria-hidden="true"><div class="skill-fill" style="width:75%"></div></div>
+          <div class="skill-percent">75%</div>
+        </div>
+      </div>
+
+      <div class="skills-column">
+        <h3 style="margin-bottom:18px;color:#222">Other Skills</h3>
+
+        <div class="skill">
+          <div class="skill-name">HTML&CSS</div>
+          <div class="skill-bar" aria-hidden="true"><div class="skill-fill" style="width:75%"></div></div>
+          <div class="skill-percent">75%</div>
+        </div>
+        <div class="skill">
+          <div class="skill-name">VS code</div>
+          <div class="skill-bar" aria-hidden="true"><div class="skill-fill" style="width:75%"></div></div>
+          <div class="skill-percent">75%</div>
+        </div>
+
+        <div class="skill">
+          <div class="skill-name">Git & GitHub</div>
+          <div class="skill-bar" aria-hidden="true"><div class="skill-fill" style="width:75%"></div></div>
+          <div class="skill-percent">75%</div>
+        </div>
+
+        <div class="skill">
+          <div class="skill-name">SQL Basics</div>
+          <div class="skill-bar" aria-hidden="true"><div class="skill-fill" style="width:65%"></div></div>
+          <div class="skill-percent">65%</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="projects" class="projects-section">
+    <div class="projects-header">
+      <h2>My Projects</h2>
+      <div class="underline"></div>
+    </div>
+
+    <div class="project-grid">
+      <article class="project-card">
+        <img src="https://images.unsplash.com/photo-1581091870622" alt="Project image">
+        <div class="project-body">
+          <h3>Prophysio AI App</h3>
+          <p>A smart physiotherapy assistant app using AI and pose detection to guide exercises, prevent injuries, and track rehabilitation progress.</p>
+          <div class="project-tags"><span class="tag">React</span><span class="tag">OpenAI</span><span class="tag">streamLit</span></div>
+          <div class="project-actions">
+            <a class="btn-outline-small" href="#">GitHub</a>
+          </div>
+        </div>
+      </article>
+
+      <article class="project-card">
+        <img src="https://images.unsplash.com/photo-1504805572947-34fad45aed93?auto=format&fit=crop&w=1400&q=80" alt="Project image">
+        <div class="project-body">
+          <h3> OWN AI AGENT</h3>
+          <p>A smart AI agent that understands tasks, makes decisions, and performs actions autonomously.</p>
+          <div class="project-tags"><span class="tag">Python</span><span class="tag">Web-UI</span><span class="tag">Playrwight</span></div>
+          <div class="project-actions">
+            <a class="btn-outline-small" href="#">GitHub</a>
+          </div>
+        </div>
+      </article>
+
+      <article class="project-card">
+        <img src="https://images.unsplash.com/photo-1522071820081-009f0129c71c?auto=format&fit=crop&w=1400&q=80" alt="Project image">
+        <div class="project-body">
+          <h3>Digital Shield</h3>
+          <p>Digital Shield is a web platform that helps users report cyber harassment and receive instant AI-powered safety support.</p>
+          <div class="project-tags"><span class="tag">React(Vite)</span><span class="tag">Firebase</span><span class="tag">OpenAI</span></div>
+          <div class="project-actions">
+            <a class="btn-outline-small" href="#">GitHub</a>
+          </div>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <section id="contact" class="contact-section">
+    <div class="contact-inner">
+      <div class="contact-card contact-form">
+        <h2 style="color:#0599ba;margin-top:0">Contact</h2>
+        <form id="contactForm">
+          <div class="field"><input id="c_name" type="text" name="name" placeholder="Name" required></div>
+          <div class="field"><input id="c_email" type="email" name="email" placeholder="Email" required></div>
+          <div class="field"><textarea id="c_message" name="message" placeholder="Message" required></textarea></div>
+          <div class="contact-actions">
+            <button type="submit" class="btn-send">Send</button>
+            <a class="btn-download" href="Pranay_Resume.pdf" download>Download Resume</a>
+          </div>
+        </form>
+      </div>
+
+      <aside class="contact-card contact-info">
+        <h3>Contact info</h3>
+        <p><strong>Phone:</strong> <a href="tel:+916303313743">+91 6303313743</a></p>
+        <p><strong>Email:</strong> <a href="mailto:pranaykumarsriram@gmail.com">pranaykumarsriram@gmail.com</a></p>
+        <p><strong>Location:</strong> Sircilla, Telangana, India</p>
+
+        <div class="contact-socials">
+          <a class="social" href="https://github.com/pranaysriram" aria-label="GitHub"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 .5C5.73.5.85 5.38.85 11.67c0 4.9 3.18 9.06 7.59 10.53.56.1.77-.24.77-.53 0-.26-.01-1-.01-1.93-3.09.67-3.74-1.49-3.74-1.49-.5-1.27-1.22-1.61-1.22-1.61-.99-.68.07-.67.07-.67 1.09.08 1.66 1.12 1.66 1.12.98 1.68 2.57 1.2 3.2.92.1-.72.38-1.2.69-1.48-2.47-.28-5.07-1.24-5.07-5.51 0-1.22.44-2.22 1.16-3.01-.12-.29-.5-1.45.11-3.02 0 0 .95-.31 3.12 1.15.9-.25 1.86-.38 2.82-.38.96 0 1.92.13 2.82.38 2.17-1.47 3.12-1.15 3.12-1.15.61 1.57.23 2.73.11 3.02.72.79 1.16 1.79 1.16 3.01 0 4.28-2.6 5.23-5.08 5.51.39.34.74 1.02.74 2.06 0 1.49-.01 2.69-.01 3.06 0 .29.21.64.78.53C19.98 20.73 23.15 16.57 23.15 11.67 23.15 5.38 18.27.5 12 .5z" fill="#111"/></svg></a>
+          <a class="social" href="https://www.linkedin.com/in/sriram-pranay-kumar/" aria-label="LinkedIn"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M4.98 3.5C4.98 4.88 3.86 6 2.48 6S0 4.88 0 3.5 1.12 1 2.5 1s2.48 1.12 2.48 2.5zM.24 8.5h4.48V24H.24V8.5zM8.98 8.5h4.3v2.08h.06c.6-1.14 2.07-2.34 4.26-2.34 4.56 0 5.4 3 5.4 6.9V24h-4.48v-7.72c0-1.84-.03-4.21-2.57-4.21-2.57 0-2.97 2.01-2.97 4.07V24H8.98V8.5z" fill="#111"/></svg></a>
+        </div>
+      </aside>
+    </div>
+  </section>
+
+  <footer class="site-footer">
+    <div class="name">Pranay</div>
+    <div class="footer-icons">
+      <a href="https://www.instagram.com/pranay_kumar_sriram/" aria-label="instagram">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M7 2C4.79 2 4.55 2 3.5 2.05 2.45 2.09 1.79 2.3 1.2 2.57.64 2.83.24 3.15 0 3.66c-.46.67-.55 1.45-.6 2.29C-1 7.79-1 8.03-1 10.25v3.5c0 2.22 0 2.46.05 3.5.05.84.14 1.62.6 2.29.24.5.64.83 1.2 1.09.59.27 1.25.48 2.3.52 1.05.05 1.29.05 3.5.05s2.46 0 3.5-.05c1.05-.04 1.71-.25 2.3-.52.56-.26.96-.59 1.2-1.09.46-.67.55-1.45.6-2.29.05-1.04.05-1.28.05-3.5v-3.5c0-2.22 0-2.46-.05-3.5-.05-.84-.14-1.62-.6-2.29-.24-.5-.64-.83-1.2-1.09-.59-.27-1.25-.48-2.3-.52C13.46 2 13.22 2 11 2H7zm5 3.5c1.93 0 3.5 1.57 3.5 3.5S13.93 12.5 12 12.5 8.5 10.93 8.5 9 10.07 5.5 12 5.5zM17.8 4.2a.8.8 0 11-1.6 0 .8.8 0 011.6 0z"/></svg>
+      </a>
+      <a href="https://x.com/Pranaysri1604" aria-label="x">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M23 3.01a10.9 10.9 0 01-3.14.86 4.92 4.92 0 002.15-2.72 9.86 9.86 0 01-3.12 1.19 4.92 4.92 0 00-8.4 4.48A13.98 13.98 0 011.67 2.15a4.92 4.92 0 001.52 6.57 4.9 4.9 0 01-2.23-.62v.06a4.92 4.92 0 003.95 4.82 4.9 4.9 0 01-2.21.08 4.92 4.92 0 004.6 3.42A9.86 9.86 0 010 19.54 13.94 13.94 0 007.55 21c9.05 0 14-7.5 14-14v-.64A9.9 9.9 0 0023 3.01z"/></svg>
+      </a>
+    </div>
+    <div style="opacity:0.85">© PranaySriram. All rights reserved</div>
+  </footer>
+</body>
+</html>
+
+  <script>
+    // Robust nav click delegation: works even if other scripts run earlier
+    (function(){
+      document.addEventListener('click', function(e){
+        const a = e.target.closest && e.target.closest('.nav-links a');
+        if (!a) return;
+        const href = a.getAttribute('href');
+        if (!href || !href.startsWith('#')) return;
+        const id = href.slice(1);
+        const target = document.getElementById(id);
+        if (!target) return;
+        e.preventDefault();
+        // Use scrollIntoView for better cross-browser behavior
+        target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        if (id === 'contact'){
+          // focus name after scroll
+          setTimeout(()=>{
+            const name = document.getElementById('c_name');
+            if (name) name.focus({preventScroll:true});
+          }, 600);
+        }
+      }, { passive: true });
+    })();
+  </script>
+
+</body>
+</html>
