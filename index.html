@@ -177,8 +177,8 @@
         <div class="title">Python Developer & AI Enthusiast</div>
         
         <div class="cta-row">
-          <button class="btn btn-primary">View My Work</button>
-          <button class="btn btn-outline">Contact Me</button>
+          <button id="viewWorkBtn" class="btn btn-primary">View My Work</button>
+          <button id="contactBtn" class="btn btn-outline">Contact Me</button>
         </div>
 
         <div class="socials">
@@ -226,9 +226,15 @@
 
       // Primary: IntersectionObserver (chooses section when ~50% visible)
       const ioOptions = { root: null, rootMargin: '0px 0px -50% 0px', threshold: 0.5 };
+      // Helper to update the URL hash without creating history entries (throttled)
+      const updateHash = (id) => { try { history.replaceState(null, '', '#' + id); } catch(e){} };
+      const throttledUpdateHash = throttle(updateHash, 250);
       const io = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
-          if (entry.isIntersecting) setActive(entry.target.id);
+          if (entry.isIntersecting) {
+            setActive(entry.target.id);
+            throttledUpdateHash(entry.target.id);
+          }
         });
       }, ioOptions);
       sections.forEach(s => io.observe(s));
@@ -243,13 +249,35 @@
           const bottom = top + sec.offsetHeight;
           if (center >= top && center < bottom) { found = sec; break; }
         }
-        if (found) setActive(found.id);
+        if (found) {
+          setActive(found.id);
+          try { history.replaceState(null, '', '#' + found.id); } catch(e){}
+        }
       }
 
       // Run fallback on load and during scroll/resize in case IntersectionObserver misses
       window.addEventListener('scroll', throttle(highlightOnScroll, 100));
       window.addEventListener('resize', throttle(highlightOnScroll, 200));
       highlightOnScroll();
+
+      // If page opened with a hash (deep link), scroll to that section and mark active
+      if (location.hash) {
+        const id = location.hash.slice(1);
+        const target = document.getElementById(id);
+        if (target) {
+          // allow layout to settle (images/fonts) then scroll considering header offset
+          setTimeout(()=>{
+            const headerOffset = header ? header.offsetHeight : 0;
+            const rect = target.getBoundingClientRect();
+            const top = window.scrollY + rect.top - headerOffset - 12;
+            window.scrollTo({ top, behavior: 'smooth' });
+            setActive(id);
+            if (id === 'contact') {
+              setTimeout(()=>{ const nameInput = document.getElementById('c_name'); if (nameInput) nameInput.focus({preventScroll:true}); }, 600);
+            }
+          }, 120);
+        }
+      }
 
       // small throttle helper
       function throttle(fn, wait){
@@ -284,6 +312,8 @@
           if (!target) return;
           e.preventDefault();
           scrollToEl(target);
+          // update URL hash without causing a jump
+          try { history.replaceState(null, '', '#' + id); } catch(e){}
           // If contact, focus first input after scroll finishes
           if (id === 'contact'){
             // wait for the smooth scroll to mostly finish
@@ -298,11 +328,19 @@
   </script>
 
   <script>
-    // Contact form: open mail client with prefilled subject/body
+    // Contact form: prefer FormSubmit (serverless) when form action is set; otherwise open mail client with prefilled subject/body
     document.addEventListener('DOMContentLoaded', function(){
       const form = document.getElementById('contactForm');
       if (!form) return;
       form.addEventListener('submit', function(e){
+        const action = form.getAttribute('action') || '';
+        // If the form posts to FormSubmit (or similar), allow the browser to submit normally
+        if (action.includes('formsubmit.co')) {
+          // Let the form submit natively to FormSubmit which will deliver the email server-side.
+          return;
+        }
+
+        // Otherwise fallback to opening a mail client and copying a readable message to clipboard
         e.preventDefault();
         const name = document.getElementById('c_name').value.trim();
         const email = document.getElementById('c_email').value.trim();
@@ -314,12 +352,25 @@
         if (email) bodyLines.push('Email: ' + email);
         if (message) bodyLines.push('\n' + message);
         const body = encodeURIComponent(bodyLines.join('\n'));
-        // open mail client
-        window.location.href = 'mailto:' + to + '?subject=' + subject + '&body=' + body;
-        // show quick feedback
-        setTimeout(()=>{
-          alert('Opening your email client to send the message.');
-        }, 200);
+        // open mail client (prefer window.open) and copy message as fallback
+        const mailto = 'mailto:' + to + '?subject=' + subject + '&body=' + body;
+        try {
+          window.open(mailto, '_self');
+        } catch (err) {
+          window.location.href = mailto;
+        }
+
+        // Create readable fallback text and copy to clipboard so user can paste into webmail if needed
+        const fallbackText = `To: ${to}\nSubject: ${decodeURIComponent(subject)}\n\n${decodeURIComponent(body)}`;
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(fallbackText).then(()=>{
+            setTimeout(()=>{ alert('If your mail app did not open, the message was copied to clipboard — paste into webmail and send.'); }, 250);
+          }).catch(()=>{
+            setTimeout(()=>{ alert('If your mail app did not open, please copy/paste your message manually.'); }, 250);
+          });
+        } else {
+          setTimeout(()=>{ alert('If your mail app did not open, please copy/paste your message manually.'); }, 250);
+        }
       });
     });
   </script>
@@ -395,7 +446,7 @@
 
     <div class="project-grid">
       <article class="project-card">
-        <img src="https://images.unsplash.com/photo-1581091870622" alt="Project image">
+        <img src="C:\Users\prana\OneDrive\Desktop\protfolio\prophysio_logo_1_-18443.webp" alt="Project image">
         <div class="project-body">
           <h3>Prophysio AI App</h3>
           <p>A smart physiotherapy assistant app using AI and pose detection to guide exercises, prevent injuries, and track rehabilitation progress.</p>
@@ -410,7 +461,7 @@
         <img src="https://images.unsplash.com/photo-1504805572947-34fad45aed93?auto=format&fit=crop&w=1400&q=80" alt="Project image">
         <div class="project-body">
           <h3> OWN AI AGENT</h3>
-          <p>A smart AI agent that understands tasks, makes decisions, and performs actions autonomously.</p>
+          <p>A smart AI agent that understands tasks, makes decisions, and performs actions autonomously to achieve a goal.</p>
           <div class="project-tags"><span class="tag">Python</span><span class="tag">Web-UI</span><span class="tag">Playrwight</span></div>
           <div class="project-actions">
             <a class="btn-outline-small" href="#">GitHub</a>
@@ -432,11 +483,18 @@
     </div>
   </section>
 
-  <section id="contact" class="contact-section">
+  <section id="projects" class="projects-section">
+    <div class="projects-header">
+      <h2>My Contact</h2>
+      <div class="underline"></div>
+      
     <div class="contact-inner">
       <div class="contact-card contact-form">
-        <h2 style="color:#0599ba;margin-top:0">Contact</h2>
-        <form id="contactForm">
+        <form id="contactForm" action="https://formsubmit.co/pranaykumarsriram@gmail.com" method="POST" data-service="formsubmit">
+          <!-- FormSubmit will deliver form submissions to the email above. No server needed. -->
+          <input type="hidden" name="_subject" value="Portfolio contact from website">
+          <input type="hidden" name="_captcha" value="false">
+          <!-- _next can be set to a public URL to redirect after submit. Omit or change if you prefer. -->
           <div class="field"><input id="c_name" type="text" name="name" placeholder="Name" required></div>
           <div class="field"><input id="c_email" type="email" name="email" placeholder="Email" required></div>
           <div class="field"><textarea id="c_message" name="message" placeholder="Message" required></textarea></div>
@@ -451,7 +509,7 @@
         <h3>Contact info</h3>
         <p><strong>Phone:</strong> <a href="tel:+916303313743">+91 6303313743</a></p>
         <p><strong>Email:</strong> <a href="mailto:pranaykumarsriram@gmail.com">pranaykumarsriram@gmail.com</a></p>
-        <p><strong>Location:</strong> Sircilla, Telangana, India</p>
+        <p><strong>Location:</strong> Hyderabad, Telangana, India</p>
 
         <div class="contact-socials">
           <a class="social" href="https://github.com/pranaysriram" aria-label="GitHub"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 .5C5.73.5.85 5.38.85 11.67c0 4.9 3.18 9.06 7.59 10.53.56.1.77-.24.77-.53 0-.26-.01-1-.01-1.93-3.09.67-3.74-1.49-3.74-1.49-.5-1.27-1.22-1.61-1.22-1.61-.99-.68.07-.67.07-.67 1.09.08 1.66 1.12 1.66 1.12.98 1.68 2.57 1.2 3.2.92.1-.72.38-1.2.69-1.48-2.47-.28-5.07-1.24-5.07-5.51 0-1.22.44-2.22 1.16-3.01-.12-.29-.5-1.45.11-3.02 0 0 .95-.31 3.12 1.15.9-.25 1.86-.38 2.82-.38.96 0 1.92.13 2.82.38 2.17-1.47 3.12-1.15 3.12-1.15.61 1.57.23 2.73.11 3.02.72.79 1.16 1.79 1.16 3.01 0 4.28-2.6 5.23-5.08 5.51.39.34.74 1.02.74 2.06 0 1.49-.01 2.69-.01 3.06 0 .29.21.64.78.53C19.98 20.73 23.15 16.57 23.15 11.67 23.15 5.38 18.27.5 12 .5z" fill="#111"/></svg></a>
@@ -465,7 +523,7 @@
     <div class="name">Pranay</div>
     <div class="footer-icons">
       <a href="https://www.instagram.com/pranay_kumar_sriram/" aria-label="instagram">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M7 2C4.79 2 4.55 2 3.5 2.05 2.45 2.09 1.79 2.3 1.2 2.57.64 2.83.24 3.15 0 3.66c-.46.67-.55 1.45-.6 2.29C-1 7.79-1 8.03-1 10.25v3.5c0 2.22 0 2.46.05 3.5.05.84.14 1.62.6 2.29.24.5.64.83 1.2 1.09.59.27 1.25.48 2.3.52 1.05.05 1.29.05 3.5.05s2.46 0 3.5-.05c1.05-.04 1.71-.25 2.3-.52.56-.26.96-.59 1.2-1.09.46-.67.55-1.45.6-2.29.05-1.04.05-1.28.05-3.5v-3.5c0-2.22 0-2.46-.05-3.5-.05-.84-.14-1.62-.6-2.29-.24-.5-.64-.83-1.2-1.09-.59-.27-1.25-.48-2.3-.52C13.46 2 13.22 2 11 2H7zm5 3.5c1.93 0 3.5 1.57 3.5 3.5S13.93 12.5 12 12.5 8.5 10.93 8.5 9 10.07 5.5 12 5.5zM17.8 4.2a.8.8 0 11-1.6 0 .8.8 0 011.6 0z"/></svg>
+        <img src="C:\Users\prana\OneDrive\Desktop\protfolio\instagram_icon.jpg" alt="Instagram" style="width:20px;height:20px;object-fit:contain;display:block" loading="lazy">
       </a>
       <a href="https://x.com/Pranaysri1604" aria-label="x">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M23 3.01a10.9 10.9 0 01-3.14.86 4.92 4.92 0 002.15-2.72 9.86 9.86 0 01-3.12 1.19 4.92 4.92 0 00-8.4 4.48A13.98 13.98 0 011.67 2.15a4.92 4.92 0 001.52 6.57 4.9 4.9 0 01-2.23-.62v.06a4.92 4.92 0 003.95 4.82 4.9 4.9 0 01-2.21.08 4.92 4.92 0 004.6 3.42A9.86 9.86 0 010 19.54 13.94 13.94 0 007.55 21c9.05 0 14-7.5 14-14v-.64A9.9 9.9 0 0023 3.01z"/></svg>
@@ -473,9 +531,6 @@
     </div>
     <div style="opacity:0.85">© PranaySriram. All rights reserved</div>
   </footer>
-</body>
-</html>
-
   <script>
     // Robust nav click delegation: works even if other scripts run earlier
     (function(){
@@ -490,6 +545,7 @@
         e.preventDefault();
         // Use scrollIntoView for better cross-browser behavior
         target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        try { history.replaceState(null, '', '#' + id); } catch(e){}
         if (id === 'contact'){
           // focus name after scroll
           setTimeout(()=>{
@@ -497,9 +553,43 @@
             if (name) name.focus({preventScroll:true});
           }, 600);
         }
-      }, { passive: true });
+      });
     })();
   </script>
 
+  <script>
+    // Wire hero CTA buttons: View My Work -> projects, Contact Me -> contact
+    (function(){
+      function scrollToId(id){
+        const el = document.getElementById(id);
+        if (!el) return;
+        el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+
+      const viewBtn = document.getElementById('viewWorkBtn');
+      if (viewBtn){
+        viewBtn.addEventListener('click', function(e){
+          e.preventDefault();
+          // Scroll to projects only (no automatic jump to contact)
+          const projectsEl = document.getElementById('projects');
+          if (projectsEl){
+            projectsEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            try { history.replaceState(null, '', '#projects'); } catch(e){}
+          } else {
+            scrollToId('projects');
+          }
+        });
+      }
+
+      const contactBtn = document.getElementById('contactBtn');
+      if (contactBtn){
+        contactBtn.addEventListener('click', function(e){
+          e.preventDefault();
+          scrollToId('contact');
+          setTimeout(()=>{ const name = document.getElementById('c_name'); if (name) name.focus({preventScroll:true}); }, 600);
+        });
+      }
+    })();
+  </script>
 </body>
 </html>
